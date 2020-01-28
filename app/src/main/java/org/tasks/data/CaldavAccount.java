@@ -14,6 +14,8 @@ import org.tasks.security.Encryption;
 @Entity(tableName = "caldav_accounts")
 public class CaldavAccount implements Parcelable {
 
+  public static final int TYPE_CALDAV = 0;
+  public static final int TYPE_ETESYNC = 1;
   public static final Parcelable.Creator<CaldavAccount> CREATOR =
       new Parcelable.Creator<CaldavAccount>() {
 
@@ -53,6 +55,15 @@ public class CaldavAccount implements Parcelable {
   @ColumnInfo(name = "cda_repeat")
   private boolean suppressRepeatingTasks;
 
+  @ColumnInfo(name = "cda_encryption_password")
+  private transient String encryptionPassword;
+
+  @ColumnInfo(name = "cda_auth_token")
+  private transient String authToken;
+
+  @ColumnInfo(name = "cda_account_type")
+  private int accountType;
+
   public CaldavAccount() {}
 
   @Ignore
@@ -65,6 +76,9 @@ public class CaldavAccount implements Parcelable {
     password = source.readString();
     error = source.readString();
     suppressRepeatingTasks = ParcelCompat.readBoolean(source);
+    encryptionPassword = source.readString();
+    authToken = source.readString();
+    accountType = source.readInt();
   }
 
   public long getId() {
@@ -135,6 +149,42 @@ public class CaldavAccount implements Parcelable {
     this.suppressRepeatingTasks = suppressRepeatingTasks;
   }
 
+  public String getEncryptionPassword() {
+    return encryptionPassword;
+  }
+
+  public void setEncryptionPassword(String encryptionPassword) {
+    this.encryptionPassword = encryptionPassword;
+  }
+
+  public String getEncryptionPassword(Encryption encryption) {
+    return encryption.decrypt(encryptionPassword);
+  }
+
+  public String getAuthToken() {
+    return authToken;
+  }
+
+  public void setAuthToken(String authToken) {
+    this.authToken = authToken;
+  }
+
+  public int getAccountType() {
+    return accountType;
+  }
+
+  public void setAccountType(int accountType) {
+    this.accountType = accountType;
+  }
+
+  public boolean isCaldavAccount() {
+    return accountType == TYPE_CALDAV;
+  }
+
+  public boolean isEteSyncAccount() {
+    return accountType == TYPE_ETESYNC;
+  }
+
   @Override
   public String toString() {
     return "CaldavAccount{"
@@ -160,6 +210,14 @@ public class CaldavAccount implements Parcelable {
         + '\''
         + ", suppressRepeatingTasks="
         + suppressRepeatingTasks
+        + ", encryptionPassword='"
+        + encryptionPassword
+        + '\''
+        + ", authToken='"
+        + authToken
+        + '\''
+        + ", accountType="
+        + accountType
         + '}';
   }
 
@@ -180,6 +238,9 @@ public class CaldavAccount implements Parcelable {
     if (suppressRepeatingTasks != that.suppressRepeatingTasks) {
       return false;
     }
+    if (accountType != that.accountType) {
+      return false;
+    }
     if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) {
       return false;
     }
@@ -195,7 +256,15 @@ public class CaldavAccount implements Parcelable {
     if (password != null ? !password.equals(that.password) : that.password != null) {
       return false;
     }
-    return error != null ? error.equals(that.error) : that.error == null;
+    if (error != null ? !error.equals(that.error) : that.error != null) {
+      return false;
+    }
+    if (encryptionPassword != null
+        ? !encryptionPassword.equals(that.encryptionPassword)
+        : that.encryptionPassword != null) {
+      return false;
+    }
+    return authToken != null ? authToken.equals(that.authToken) : that.authToken == null;
   }
 
   @Override
@@ -208,6 +277,9 @@ public class CaldavAccount implements Parcelable {
     result = 31 * result + (password != null ? password.hashCode() : 0);
     result = 31 * result + (error != null ? error.hashCode() : 0);
     result = 31 * result + (suppressRepeatingTasks ? 1 : 0);
+    result = 31 * result + (encryptionPassword != null ? encryptionPassword.hashCode() : 0);
+    result = 31 * result + (authToken != null ? authToken.hashCode() : 0);
+    result = 31 * result + accountType;
     return result;
   }
 
@@ -226,5 +298,8 @@ public class CaldavAccount implements Parcelable {
     dest.writeString(password);
     dest.writeString(error);
     ParcelCompat.writeBoolean(dest, suppressRepeatingTasks);
+    dest.writeString(encryptionPassword);
+    dest.writeString(authToken);
+    dest.writeInt(accountType);
   }
 }

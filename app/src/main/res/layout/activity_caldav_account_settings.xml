@@ -6,9 +6,13 @@
   android:layout_height="match_parent"
   android:orientation="vertical">
 
-  <include layout="@layout/toolbar"/>
+  <include
+    android:id="@+id/toolbar"
+    layout="@layout/toolbar" />
 
-  <include layout="@layout/progress_view"/>
+  <include
+    android:id="@+id/progress_bar"
+    layout="@layout/progress_view" />
 
   <ScrollView
     android:layout_width="fill_parent"
@@ -71,6 +75,22 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:hint="@string/password"
+          android:imeOptions="flagNoExtractUi"
+          android:inputType="textPassword"/>
+
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/encryption_password_layout"
+        style="@style/TagSettingsRow"
+        android:visibility="gone"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/encryption_password"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/encryption_password"
           android:imeOptions="flagNoExtractUi"
           android:inputType="textPassword"/>
 

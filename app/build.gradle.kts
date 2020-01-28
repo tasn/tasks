@@ -36,8 +36,8 @@ android {
     defaultConfig {
         testApplicationId = "org.tasks.test"
         applicationId = "org.tasks"
-        versionCode = 660
-        versionName = "7.8"
+        versionCode = 800
+        versionName = "8.0"
         targetSdkVersion(Versions.targetSdk)
         minSdkVersion(Versions.minSdk)
         multiDexEnabled = true
@@ -78,7 +78,7 @@ android {
             applicationIdSuffix = ".debug"
             resValue("string", "mapbox_key", tasks_mapbox_key_debug ?: "")
             resValue("string", "google_key", tasks_google_key_debug ?: "")
-            isTestCoverageEnabled = true
+            isTestCoverageEnabled = project.hasProperty("coverage")
         }
         getByName("release") {
             val tasks_mapbox_key: String? by project
@@ -200,6 +200,7 @@ dependencies {
     implementation("androidx.work:work-runtime:${Versions.work}")
     implementation("com.mapbox.mapboxsdk:mapbox-android-sdk:7.3.0")
     implementation("com.mapbox.mapboxsdk:mapbox-sdk-services:4.6.0")
+    implementation("com.etesync:journalmanager:1.0.1")
 
     googleplayImplementation("com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}")
     googleplayImplementation("com.google.firebase:firebase-analytics:${Versions.firebase}")
