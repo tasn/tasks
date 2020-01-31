@@ -26,6 +26,7 @@ import com.etesync.journalmanager.JournalManager;
 import com.etesync.journalmanager.JournalManager.Journal;
 import com.etesync.journalmanager.UserInfoManager;
 import com.etesync.journalmanager.UserInfoManager.UserInfo;
+import com.etesync.journalmanager.util.TokenAuthenticator;
 import com.todoroo.astrid.helper.UUIDHelper;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -117,7 +118,7 @@ public class EteSyncClient {
     Builder builder =
         new OkHttpClient()
             .newBuilder()
-            .addNetworkInterceptor(new TokenAuthenticator(token))
+            .addNetworkInterceptor(new TokenAuthenticator(url, token))
             .cookieJar(new MemoryCookieStore())
             .followRedirects(false)
             .followSslRedirects(true)
